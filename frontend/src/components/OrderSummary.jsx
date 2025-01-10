@@ -19,7 +19,7 @@ const OrderSummary = () => {
 
 	const handlePayment = async () => {
 		const stripe = await stripePromise;
-		const res = await axios.post("/payments/create-checkout-session", {
+		const res = await axios.post("/", {
 			products: cart,
 			couponCode: coupon ? coupon.code : null,
 		});
@@ -73,7 +73,7 @@ const OrderSummary = () => {
 					className='flex w-full items-center justify-center rounded-lg bg-gray-950 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-950 focus:outline-none focus:ring-4 focus:ring-gray-950'
 					whileHover={{ scale: 1.05 }}
 					whileTap={{ scale: 0.95 }}
-					onClick={handlePayment}
+
 				>
 					Proceed to Checkout
 				</motion.button>
