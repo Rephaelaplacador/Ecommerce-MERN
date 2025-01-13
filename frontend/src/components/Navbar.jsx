@@ -33,7 +33,8 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 w-full bg-gray-100 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-gray-950">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-        <nav className="flex items-center space-x-4">
+          
+          <nav className="flex items-center space-x-4">
             <Link
               to="/latest"
               className="text-gray-900 font-bold hover:text-gray-400 transition duration-300 ease-in-out"
@@ -41,6 +42,7 @@ const Navbar = () => {
               LATEST
             </Link>
           </nav>
+
           <nav className="flex items-center space-x-4 p-2">
             <Link
               to="/kids"
@@ -49,6 +51,7 @@ const Navbar = () => {
               KIDS
             </Link>
           </nav>
+
           <nav className="flex items-center space-x-4">
             <Link
               to="/women"
@@ -57,6 +60,7 @@ const Navbar = () => {
               WOMEN
             </Link>
           </nav>
+
           <nav className="flex items-center space-x-4 p-2">
             <Link
               to="/men"
@@ -65,15 +69,17 @@ const Navbar = () => {
               MEN
             </Link>
           </nav>
-          <nav className="flex items-center space-x-4 p-1">
-              <Link
-                to="/"
-                className="text-gray-900 font-bold hover:text-gray-400 transition duration-300 ease-in-out"
-              >
-                HOME
-              </Link>
-            </nav>
 
+          <nav className="flex items-center space-x-4 p-1">
+            <Link
+              to="/"
+              className="text-gray-900 font-bold hover:text-gray-400 transition duration-300 ease-in-out"
+            >
+              HOME
+            </Link>
+          </nav>
+
+          
           <div className="flex items-center justify-center flex-1 pl-28">
             <Link
               to="/"
@@ -83,6 +89,7 @@ const Navbar = () => {
             </Link>
           </div>
 
+          
           <nav className="flex items-center gap-4">
             <div className="relative">
               <input
@@ -95,6 +102,7 @@ const Navbar = () => {
               />
             </div>
 
+            
             {user && (
               <Link
                 to={"/cart"}
@@ -113,6 +121,7 @@ const Navbar = () => {
               </Link>
             )}
 
+            
             {user && !isAdmin && (
               <Link
                 to={"/customer-dashboard"}
@@ -122,6 +131,7 @@ const Navbar = () => {
               </Link>
             )}
 
+            
             {isAdmin && (
               <Link
                 className="bg-gray-900 hover:bg-gray-500 text-white px-3 py-1 rounded-md font-medium transition duration-300 ease-in-out flex items-center"
@@ -132,6 +142,7 @@ const Navbar = () => {
               </Link>
             )}
 
+            
             {user ? (
               <button
                 className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md flex items-center transition duration-300 ease-in-out"
