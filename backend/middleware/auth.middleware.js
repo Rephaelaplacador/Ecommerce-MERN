@@ -33,9 +33,9 @@ export const protectRoute = async (req, res, next) => {
 };
 
 export const adminRoute = (req, res, next) => {
-	if (req.user && (req.user.role === "admin" || req.user.role === "seller")) {
+	if (req.user && (req.user.role === "admin")) {
 	  next();
 	} else {
-	  return res.status(403).json({ message: "Access denied - Admin or Seller only" });
+	  return res.status(403).json({ message: "Access denied - Admin" });
 	}
   };

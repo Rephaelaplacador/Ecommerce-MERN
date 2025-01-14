@@ -10,8 +10,7 @@ export const SearchProvider = ({ children }) => {
     keyword: "",
     results: [],
     filter: "",
-    sort: "lowToHigh",  // Default sort by Price Low to High
-    brand: [],
+    sort: "lowToHigh",  
     size: "",
   });
 
@@ -100,13 +99,13 @@ const SearchPage = () => {
       .sort((a, b) => {
         switch (sort) {
           case "lowToHigh":
-            return a.price - b.price; // Sort by price Low to High
+            return a.price - b.price;
           case "highToLow":
-            return b.price - a.price; // Sort by price High to Low
+            return b.price - a.price; 
           case "latest":
-            return new Date(b.createdAt) - new Date(a.createdAt); // Sort by latest
+            return new Date(b.createdAt) - new Date(a.createdAt); 
           case "featured":
-            return b.featured ? 1 : -1; // Sort by featured
+            return b.featured ? 1 : -1; 
           default:
             return 0;
         }
