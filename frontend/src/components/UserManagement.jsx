@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "../lib/axios";
-import { FaEdit, FaTrashAlt, FaSpinner } from "react-icons/fa"; // For icons
+import { Edit, Trash2, Loader } from "lucide-react"; // For icons
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
@@ -13,7 +13,6 @@ const UserManagement = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [form, setForm] = useState({ name: "", email: "", role: "User" });
 
-    
     const fetchUsers = async () => {
         try {
             setIsLoading(true);
@@ -22,7 +21,6 @@ const UserManagement = () => {
             setIsLoading(false);
             setError(null); 
 
-            
             response.data.forEach(user => {
                 fetchUserOrders(user._id); 
             });
@@ -33,7 +31,6 @@ const UserManagement = () => {
         }
     };
 
-    
     const fetchUserOrders = async (userId) => {
         try {
             const response = await axios.get(`/orders/${userId}`);
@@ -48,12 +45,10 @@ const UserManagement = () => {
         }
     };
 
-    
     useEffect(() => {
         fetchUsers();
     }, []);
 
-    
     useEffect(() => {
         if (currentUser) {
             fetchUserAnalytics(currentUser._id);
@@ -62,14 +57,12 @@ const UserManagement = () => {
         }
     }, [currentUser]);
 
-  
     const handleEdit = (user) => {
         setCurrentUser(user);
         setForm(user);
         setIsEditing(true);
     };
 
-    
     const handleDelete = async (id) => {
         try {
             const token = document.cookie.replace(
@@ -98,7 +91,7 @@ const UserManagement = () => {
 
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
-                    <FaSpinner className="animate-spin text-white text-4xl" />
+                    <Loader className="animate-spin text-white text-4xl" />
                 </div>
             ) : (
                 <div>
@@ -122,24 +115,22 @@ const UserManagement = () => {
                                                 onClick={() => handleEdit(user)}
                                                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
                                             >
-                                                <FaEdit className="mr-2" /> Edit
+                                                <Edit className="mr-2" /> Edit
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(user._id)}
                                                 className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center"
                                             >
-                                                <FaTrashAlt className="mr-2" /> Delete
+                                                <Trash2 className="mr-2" /> Delete
                                             </button>
                                         </div>
                                     </div>
 
-                                    
                                     <div className="mt-4">
                                         <h4 className="font-semibold text-gray-200 mb-2">Platform Activities</h4>
                                         <pre className="text-sm bg-gray-700 p-4 rounded">{JSON.stringify(analytics?.[user._id] || {}, null, 2)}</pre>
                                     </div>
 
-                                    
                                     {user.role === "admin" && (
                                         <div className="mt-4">
                                             <h4 className="font-semibold text-gray-200 mb-2">Sales Reports</h4>
@@ -147,7 +138,6 @@ const UserManagement = () => {
                                         </div>
                                     )}
 
-                                    
                                     <div className="mt-4">
                                         <h4 className="font-semibold text-gray-200 mb-2">Orders</h4>
                                         <div className="space-y-4">
