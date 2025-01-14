@@ -9,8 +9,8 @@ import couponRoutes from "./routes/coupon.routes.js";
 import paymentRoutes from "./routes/payment.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 import { searchProductController } from './controllers/product.controller.js';
-import userRoutes from "./routes/auth.route.js";
-
+import userRoutes from "./routes/users.route.js";
+import sellerRoutes from './routes/seller.route.js';
 
 import { connectDB } from "./lib/db.js";
 
@@ -27,9 +27,10 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use("api/analytics", analyticsRoutes)
+app.use("/api/analytics", analyticsRoutes)
 app.get("/api/search/:keyword", searchProductController);
-app.get("/api/users",  userRoutes)
+app.use("/api/users", userRoutes);
+app.use('/api/sellers', sellerRoutes);
 
 app.listen(PORT, () => {
   console.log("Server is running on http://localhost:" + PORT);

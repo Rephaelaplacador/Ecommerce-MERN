@@ -1,22 +1,25 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import axios from "../lib/axios";
 
 export const useOrderStore = create((set) => ({
   orders: [],
   loading: false,
-  fetchCustomerOrders: async () => {
+  purchaseStatus: null,
+  fetchCustomerOrders: async (token) => {
     set({ loading: true });
     try {
-      const response = await fetch('/orders/mine', {
+      const response = await axios.get("/orders/mine", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, 
+          Authorization: `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error('Failed to fetch orders');
-      const data = await response.json();
-      set({ orders: data, loading: false });
+      set({ orders: response.data, loading: false });
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error("Error fetching orders:", error);
       set({ loading: false });
     }
+  },
+  updatePurchaseStatus: (status) => {
+    set({ purchaseStatus: status });
   },
 }));

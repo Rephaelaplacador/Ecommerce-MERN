@@ -5,14 +5,14 @@ import { motion } from "framer-motion";
 import AnalyticsTab from "../components/AnalyticsTab";
 import CreateProductForm from "../components/CreateProductForm";
 import ProductsList from "../components/ProductsList";
-import UserManagement from "../components/UserManagement"; // New Component
+import UserManagement from "../components/UserManagement"; 
 import { useProductStore } from "../stores/useProductStore";
 
 const tabs = [
 	{ id: "create", label: "Create Product", icon: PlusCircle },
 	{ id: "products", label: "Products", icon: ShoppingBasket },
 	{ id: "analytics", label: "Sales Analytics", icon: BarChart },
-	{ id: "users", label: "Manage Users", icon: Users }, // New Tab
+	{ id: "users", label: "Manage Users", icon: Users }, 
 ];
 
 const AdminPage = () => {
@@ -52,11 +52,11 @@ const AdminPage = () => {
 					))}
 				</div>
 
-				{/* Render tabs */}
+				
 				{activeTab === "create" && <CreateProductForm />}
 				{activeTab === "products" && <ProductsList />}
 				{activeTab === "analytics" && <AnalyticsTab />}
-				{activeTab === "users" && <UserManagement />} {/* New Tab Content */}
+				{activeTab === "users" && <UserManagement />}
 			</div>
 		</div>
 	);

@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "../lib/axios";
+import { FaEdit, FaTrashAlt, FaSpinner } from "react-icons/fa"; // For icons
 
 const UserManagement = () => {
     const [users, setUsers] = useState([]);
+    const [analytics, setAnalytics] = useState(null);
+    const [sales, setSales] = useState(null);
+    const [orders, setOrders] = useState({}); 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -13,146 +17,162 @@ const UserManagement = () => {
     const fetchUsers = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get("/users"); 
+            const response = await axios.get("/users/all");
             setUsers(response.data);
             setIsLoading(false);
+            setError(null); 
+
+            
+            response.data.forEach(user => {
+                fetchUserOrders(user._id); 
+            });
         } catch (err) {
+            console.error("Error fetching users:", err.message);
             setError("Failed to fetch users.");
             setIsLoading(false);
         }
     };
 
+    
+    const fetchUserOrders = async (userId) => {
+        try {
+            const response = await axios.get(`/orders/${userId}`);
+            console.log(`Fetched orders for user ${userId}:`, response.data); 
+
+            setOrders((prevOrders) => ({
+                ...prevOrders,
+                [userId]: response.data,
+            }));
+        } catch (err) {
+            console.error(`Error fetching orders for user ${userId}:`, err.message);
+        }
+    };
+
+    
     useEffect(() => {
         fetchUsers();
     }, []);
 
     
-    const handleSave = async () => {
-        try {
-            if (isEditing) {
-                await axios.put(`/users/${currentUser.id}`, form); 
-                setUsers((prev) =>
-                    prev.map((user) => (user.id === currentUser.id ? { ...form, id: user.id } : user))
-                );
-                setIsEditing(false);
-            } else {
-                const response = await axios.post("/users", form); 
-                setUsers((prev) => [...prev, response.data]);
-            }
-            setForm({ name: "", email: "", role: "User" });
-        } catch (err) {
-            setError("Failed to save user.");
+    useEffect(() => {
+        if (currentUser) {
+            fetchUserAnalytics(currentUser._id);
+            fetchUserSales(currentUser._id);
+            fetchUserOrders(currentUser._id);
         }
-    };
+    }, [currentUser]);
 
-    
-    const handleDelete = async (id) => {
-        try {
-            await axios.delete(`/users/${id}`); 
-            setUsers((prev) => prev.filter((user) => user.id !== id));
-        } catch (err) {
-            setError("Failed to delete user.");
-        }
-    };
-
-    
+  
     const handleEdit = (user) => {
         setCurrentUser(user);
         setForm(user);
         setIsEditing(true);
     };
 
+    
+    const handleDelete = async (id) => {
+        try {
+            const token = document.cookie.replace(
+                /(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/,
+                "$1"
+            ); 
+
+            await axios.delete(`/api/users/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setUsers((prev) => prev.filter((user) => user._id !== id));
+        } catch (err) {
+            setError("Failed to delete user.");
+        }
+    };
+
     return (
-        <div className="p-4 bg-gray-800 rounded-lg shadow-md text-gray-100">
-            <h2 className="text-2xl font-bold mb-4">User Management</h2>
+        <div className="container mx-auto p-6 bg-gray-900 rounded-lg shadow-lg text-gray-100">
+            <h2 className="text-3xl font-bold mb-6 text-center">User Management</h2>
 
-            {/* Error Message */}
-            {error && <p className="text-red-500 mb-4">{error}</p>}
+            {error && (
+                <p className="bg-red-500 text-white text-sm p-3 rounded mb-4">{error}</p>
+            )}
 
-            {/* Loading Indicator */}
             {isLoading ? (
-                <p>Loading users...</p>
+                <div className="flex justify-center items-center py-10">
+                    <FaSpinner className="animate-spin text-white text-4xl" />
+                </div>
             ) : (
                 <div>
-                    {/* User List */}
-                    <div className="mb-8">
-                        <h3 className="text-lg font-semibold mb-2">Users</h3>
-                        <ul className="divide-y divide-gray-700">
-                            {users.map((user) => (
-                                <li key={user.id} className="flex justify-between items-center py-2">
-                                    <div>
-                                        <p className="font-medium">{user.name}</p>
-                                        <p className="text-sm text-gray-400">{user.email}</p>
-                                        <p className="text-sm text-gray-500">{user.role}</p>
-                                    </div>
-                                    <div>
-                                        <button
-                                            onClick={() => handleEdit(user)}
-                                            className="px-2 py-1 text-sm text-blue-500 hover:underline"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(user.id)}
-                                            className="ml-2 px-2 py-1 text-sm text-red-500 hover:underline"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Form */}
-                    <div>
-                        <h3 className="text-lg font-semibold mb-2">
-                            {isEditing ? "Edit User" : "Add New User"}
-                        </h3>
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                handleSave();
-                            }}
-                        >
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Name</label>
-                                <input
-                                    type="text"
-                                    value={form.name}
-                                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    className="w-full px-3 py-2 bg-gray-900 text-gray-100 rounded-md"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Email</label>
-                                <input
-                                    type="email"
-                                    value={form.email}
-                                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                    className="w-full px-3 py-2 bg-gray-900 text-gray-100 rounded-md"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium mb-1">Role</label>
-                                <select
-                                    value={form.role}
-                                    onChange={(e) => setForm({ ...form, role: e.target.value })}
-                                    className="w-full px-3 py-2 bg-gray-900 text-gray-100 rounded-md"
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {users.length === 0 ? (
+                            <p className="text-sm text-gray-400">No users found.</p>
+                        ) : (
+                            users.map((user) => (
+                                <div
+                                    key={user._id}
+                                    className="bg-gray-800 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300"
                                 >
-                                    <option value="User">User</option>
-                                    <option value="Admin">Admin</option>
-                                </select>
-                            </div>
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                            >
-                                {isEditing ? "Update User" : "Add User"}
-                            </button>
-                        </form>
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div>
+                                            <p className="font-bold text-lg">{user.name}</p>
+                                            <p className="text-sm text-gray-400">{user.email}</p>
+                                            <p className="text-sm text-gray-500">{user.role}</p>
+                                        </div>
+                                        <div className="space-x-2">
+                                            <button
+                                                onClick={() => handleEdit(user)}
+                                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center"
+                                            >
+                                                <FaEdit className="mr-2" /> Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(user._id)}
+                                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 flex items-center"
+                                            >
+                                                <FaTrashAlt className="mr-2" /> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div className="mt-4">
+                                        <h4 className="font-semibold text-gray-200 mb-2">Platform Activities</h4>
+                                        <pre className="text-sm bg-gray-700 p-4 rounded">{JSON.stringify(analytics?.[user._id] || {}, null, 2)}</pre>
+                                    </div>
+
+                                    
+                                    {user.role === "admin" && (
+                                        <div className="mt-4">
+                                            <h4 className="font-semibold text-gray-200 mb-2">Sales Reports</h4>
+                                            <pre className="text-sm bg-gray-700 p-4 rounded">{JSON.stringify(sales?.[user._id] || {}, null, 2)}</pre>
+                                        </div>
+                                    )}
+
+                                    
+                                    <div className="mt-4">
+                                        <h4 className="font-semibold text-gray-200 mb-2">Orders</h4>
+                                        <div className="space-y-4">
+                                            {orders[user._id] ? (
+                                                orders[user._id].map((order) => (
+                                                    <div
+                                                        key={order._id}
+                                                        className="bg-gray-700 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
+                                                    >
+                                                        <p className="font-semibold text-gray-100">Order ID: {order._id}</p>
+                                                        <p className="text-sm text-gray-400">Total Amount: {order.totalAmount}</p>
+                                                        <p className="text-sm text-gray-400">Status: {order.status}</p>
+                                                        <p className="text-sm text-gray-400">
+                                                            Created At: {new Date(order.createdAt).toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <p className="text-sm text-gray-400">No orders available.</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
             )}

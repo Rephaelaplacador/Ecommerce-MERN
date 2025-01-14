@@ -17,6 +17,7 @@ import CartPage from "./pages/CartPage";
 import { useCartStore } from "./stores/useCartStore";
 import PurchaseSuccessPage from "./pages/PurchaseSuccessPage";
 import PurchaseCancelPage from "./pages/PurchaseCancelPage";
+import SellerPage from "./pages/SellerPage";
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
@@ -68,8 +69,18 @@ function App() {
             <Route
               path="/customer-dashboard"
               element={
-                user?.role === "customer" ? (
+                user?.role === "customer" || user?.role === "seller" ? (
                   <CustomerPage />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/seller-dashboard"
+              element={
+                user?.role === "seller" ? (
+                  <SellerPage />
                 ) : (
                   <Navigate to="/login" />
                 )

@@ -24,10 +24,10 @@ const orderTabs = [
 const CustomerPage = () => {
   const [activeTab, setActiveTab] = useState("orders");
   const [activeOrderTab, setActiveOrderTab] = useState("All");
-  const { fetchCustomerOrders, loading } = useOrderStore();
+  const { fetchCustomerOrders, loading, orders } = useOrderStore(); 
 
   useEffect(() => {
-    fetchCustomerOrders();
+    fetchCustomerOrders(); 
   }, [fetchCustomerOrders]);
 
   return (
@@ -42,7 +42,7 @@ const CustomerPage = () => {
           Customer Dashboard
         </motion.h1>
 
-        {/* Tabs for Orders and Profile */}
+        
         <div className="flex justify-center mb-8">
           {tabs.map((tab) => (
             <button
@@ -60,17 +60,17 @@ const CustomerPage = () => {
           ))}
         </div>
 
-        {/* Content Based on Active Tab */}
+        
         {activeTab === "orders" && (
           <div>
-            {/* Order Tracking with Categories */}
+            
             <div className="mb-8">
               <h3 className="text-2xl font-semibold mb-4 text-center text-gray-100">Track Your Orders</h3>
               <p className="text-gray-300 mb-6 text-center">
                 Filter your orders by status and track their progress in real-time.
               </p>
 
-              {/* Order Categories Tabs */}
+              
               <div className="flex justify-center mb-6 border-b border-gray-700">
                 {orderTabs.map((tab) => (
                   <button
@@ -87,11 +87,11 @@ const CustomerPage = () => {
                 ))}
               </div>
 
-              {/* Order List */}
+              
               {loading ? (
                 <p className="text-gray-300 text-center">Loading your orders...</p>
               ) : (
-                <OrdersList activeCategory={activeOrderTab} />
+                <OrdersList activeCategory={activeOrderTab} orders={orders} /> 
               )}
             </div>
           </div>

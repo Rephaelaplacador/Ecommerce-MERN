@@ -13,6 +13,8 @@ import { useState } from "react";
 const Navbar = () => {
   const { user, logout } = useUserStore();
   const isAdmin = user?.role === "admin";
+  const isSeller = user?.role === "seller";
+  const isCustomer = user?.role === "customer"; 
   const { cart } = useCartStore();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -33,7 +35,6 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 w-full bg-gray-100 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-gray-950">
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          
           <nav className="flex items-center space-x-4">
             <Link
               to="/latest"
@@ -79,7 +80,6 @@ const Navbar = () => {
             </Link>
           </nav>
 
-          
           <div className="flex items-center justify-center flex-1 pl-28">
             <Link
               to="/"
@@ -89,7 +89,6 @@ const Navbar = () => {
             </Link>
           </div>
 
-          
           <nav className="flex items-center gap-4">
             <div className="relative">
               <input
@@ -102,7 +101,6 @@ const Navbar = () => {
               />
             </div>
 
-            
             {user && (
               <Link
                 to={"/cart"}
@@ -122,12 +120,22 @@ const Navbar = () => {
             )}
 
             
-            {user && !isAdmin && (
+            {(isSeller || isCustomer) && (
               <Link
                 to={"/customer-dashboard"}
                 className="text-gray-900 hover:text-gray-400 transition duration-300 ease-in-out"
               >
                 My Orders
+              </Link>
+            )}
+
+            
+            {isSeller && (
+              <Link
+                to={`/seller-dashboard`}
+                className="text-gray-900 hover:text-gray-400 transition duration-300 ease-in-out"
+              >
+                My Store
               </Link>
             )}
 
@@ -142,7 +150,6 @@ const Navbar = () => {
               </Link>
             )}
 
-            
             {user ? (
               <button
                 className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md flex items-center transition duration-300 ease-in-out"

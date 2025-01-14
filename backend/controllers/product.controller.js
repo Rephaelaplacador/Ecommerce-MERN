@@ -173,9 +173,9 @@ export const searchProductController = async (req, res) => {
     try {
         const { keyword } = req.params;
         
-        console.log("Search keyword:", keyword);  // Log the keyword for debugging
+        console.log("Search keyword:", keyword);  
         
-        // Sanitize and validate keyword
+        
         const sanitizedKeyword = keyword.trim();
         if (!sanitizedKeyword) {
             return res.status(400).json({ message: "Please provide a valid search keyword." });
