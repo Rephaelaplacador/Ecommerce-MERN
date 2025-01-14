@@ -70,7 +70,7 @@ const UserManagement = () => {
                 "$1"
             ); 
 
-            await axios.delete(`/api/users/${id}`, {
+            await axios.delete(`/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
