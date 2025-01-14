@@ -1,4 +1,4 @@
-# Project README
+# Project E-commerce
 
 ## Overview
 This project is a multi-component application with a backend and a `frontend` directory. The `frontend` contains the client-side application, while the root directory manages the overall build and dependencies. 
