@@ -10,8 +10,9 @@ export const SearchProvider = ({ children }) => {
     keyword: "",
     results: [],
     filter: "",
-    sort: "lowToHigh",  
+    sort: "lowToHigh",
     size: "",
+    brand: [], // Ensure this is initialized
   });
 
   const value = useMemo(() => [auth, setAuth], [auth, setAuth]);
@@ -26,19 +27,21 @@ export const SearchProvider = ({ children }) => {
 export const useSearch = () => useContext(SearchContext);
 
 const SearchPage = () => {
-  const { fetchProductsByCategory, products } = useProductStore();
+  const { products } = useProductStore(); // Removed fetchProductsByCategory since it was unused
   const [auth, setAuth] = useSearch();
   const { keyword, results, filter, sort, brand, size } = auth;
 
   const [loading, setLoading] = useState(false);
 
   const fetchProductsFromCategory = async (category) => {
+    if (!category) return;
+    setLoading(true);
     try {
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`/api/products?category=${category}`, {
+      const response = await fetch(`/products?category=${category}`, {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -47,17 +50,17 @@ const SearchPage = () => {
       }
 
       const data = await response.json();
-      console.log("Fetched products:", data);
+      setAuth((prev) => ({ ...prev, results: data }));
       setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (filter) {
-      fetchProductsFromCategory(filter); 
+      fetchProductsFromCategory(filter);
     }
   }, [filter]);
 
@@ -101,11 +104,11 @@ const SearchPage = () => {
           case "lowToHigh":
             return a.price - b.price;
           case "highToLow":
-            return b.price - a.price; 
+            return b.price - a.price;
           case "latest":
-            return new Date(b.createdAt) - new Date(a.createdAt); 
+            return new Date(b.createdAt) - new Date(a.createdAt);
           case "featured":
-            return b.featured ? 1 : -1; 
+            return b.featured ? 1 : -1;
           default:
             return 0;
         }
@@ -141,7 +144,6 @@ const SearchPage = () => {
                 />
               </div>
 
-              {/* Sort by Price and Other Options */}
               <div className="mb-4">
                 <label htmlFor="sort" className="block text-sm text-gray-300 mb-2">
                   Sort by
