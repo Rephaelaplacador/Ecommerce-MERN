@@ -8,7 +8,7 @@ This project is a multi-component application with a backend and a `frontend` di
 
 Here's a screenshot of the application:
 
-![Project Screenshot](frontend/public/images/ecommerce.png)
+![Project Screenshot](frontend/public/ecommerce.png)
 
 
 ## Tech Stack
