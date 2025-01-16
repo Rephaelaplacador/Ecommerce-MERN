@@ -4,6 +4,13 @@
 
 This project is a multi-component application with a backend and a `frontend` directory. The `frontend` contains the client-side application, while the root directory manages the overall build and dependencies.
 
+## Project Screenshot
+
+Here's a screenshot of the application:
+
+![Project Screenshot](frontend/public/images/ecommerce.png)
+
+
 ## Tech Stack
 
 The project utilizes the following technologies:
